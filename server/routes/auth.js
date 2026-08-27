@@ -13,7 +13,7 @@ const {
   changePassword,
   updateAvatar,
   removeAvatar,
-} = require("../controllers/authController");
+} = require("../controllers/authcontroller");
 
 // =====================================================
 // PUBLIC AUTH
