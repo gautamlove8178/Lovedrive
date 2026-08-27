@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:5000/api",
   withCredentials: true,
 });
 
@@ -11,21 +13,12 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    if (
-      typeof window !==
-      "undefined"
-    ) {
-      const token =
-        localStorage.getItem(
-          "token"
-        );
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
 
       if (token) {
-        config.headers =
-          config.headers || {};
-
-        config.headers.Authorization =
-          `Bearer ${token}`;
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
 
@@ -33,9 +26,7 @@ api.interceptors.request.use(
   },
 
   (error) => {
-    return Promise.reject(
-      error
-    );
+    return Promise.reject(error);
   }
 );
 
@@ -47,19 +38,14 @@ api.interceptors.response.use(
   (response) => response,
 
   (error) => {
-    if (
-      error.response?.status ===
-      401
-    ) {
+    if (error.response?.status === 401) {
       console.error(
         "AUTHENTICATION ERROR:",
         error.response?.data
       );
     }
 
-    return Promise.reject(
-      error
-    );
+    return Promise.reject(error);
   }
 );
 
