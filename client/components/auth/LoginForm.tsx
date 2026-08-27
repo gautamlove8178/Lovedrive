@@ -1,78 +1,148 @@
 "use client";
 
-import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { useState } from "react";
 
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-
 interface LoginFormProps {
-  onLogin: () => void;
+  onLogin: (
+    email: string,
+    password: string
+  ) => Promise<void>;
 }
 
-export default function LoginForm({ onLogin }: LoginFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [username, setUsername] = useState("");
+export default function LoginForm({
+  onLogin,
+}: LoginFormProps) {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (username === "admin" && password === "123456") {
-      onLogin();
+  const [loading, setLoading] =
+    useState(false);
+
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please enter email and password");
       return;
     }
 
-    alert("Invalid Username or Password");
+    try {
+      setLoading(true);
+
+      await onLogin(
+        email,
+        password
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="mt-8 space-y-5">
-      <div>
-        <label className="mb-2 block text-sm text-zinc-400">
-          Username
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5"
+    >
+      {/* EMAIL */}
+
+      <div className="mb-[1.2rem]">
+        <label className="mb-2 ml-[5px] block text-[0.85rem] text-[#999]">
+          Email
         </label>
 
-        <div className="relative">
-          <User className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter username"
-            className="pl-12"
-          />
-        </div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          placeholder="Enter email"
+          autoComplete="email"
+          className="
+            w-full
+            rounded-[15px]
+            border
+            border-transparent
+            bg-white/[0.07]
+            px-[18px]
+            py-[14px]
+            text-base
+            text-white
+            outline-none
+            transition
+            placeholder:text-[#777]
+            focus:border-[#d4a373]
+            focus:bg-white/[0.12]
+          "
+        />
       </div>
 
-      <div>
-        <label className="mb-2 block text-sm text-zinc-400">
+      {/* PASSWORD */}
+
+      <div className="mb-[1.2rem]">
+        <label className="mb-2 ml-[5px] block text-[0.85rem] text-[#999]">
           Password
         </label>
 
-        <div className="relative">
-          <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-
-          <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter password"
-            className="pl-12 pr-12"
-          />
-
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        </div>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+          placeholder="Enter Password"
+          autoComplete="current-password"
+          className="
+            w-full
+            rounded-[15px]
+            border
+            border-transparent
+            bg-white/[0.07]
+            px-[18px]
+            py-[14px]
+            text-base
+            text-white
+            outline-none
+            transition
+            placeholder:text-[#777]
+            focus:border-[#d4a373]
+            focus:bg-white/[0.12]
+          "
+        />
       </div>
 
-      <Button onClick={handleLogin}>
-        Secure Login
-      </Button>
-    </div>
+      {/* BUTTON */}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="
+          mt-[10px]
+          w-full
+          rounded-[15px]
+          border-none
+          px-[15px]
+          py-[15px]
+          text-base
+          font-semibold
+          text-[#121417]
+          cursor-pointer
+          transition
+          hover:scale-[1.02]
+          disabled:cursor-wait
+          disabled:opacity-60
+        "
+        style={{
+          background:
+            "linear-gradient(135deg,#bf953f,#fcf6ba,#b38728,#fcf6ba,#aa771c)",
+        }}
+      >
+        {loading
+          ? "Signing In..."
+          : "Sign In"}
+      </button>
+    </form>
   );
 }
