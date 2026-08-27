@@ -1,6 +1,6 @@
 const File = require("../models/File");
 const cloudinary = require("../config/cloudinary");
-const User = require("../models/User");
+const User = require("../models/user");
 const Folder = require("../models/Folder");
 const crypto = require("crypto");
 
